@@ -9,7 +9,7 @@ resource "yandex_compute_instance" "db" {
   # for_each с преобразованным map
   for_each = local.db_vms_map
 
-  name        = each.value.vm_name  # "main" или "replica"
+  name        = each.value.vm_name # "main" или "replica"
   hostname    = each.value.vm_name
   platform_id = each.value.platform_id
   zone        = each.value.zone
@@ -25,17 +25,17 @@ resource "yandex_compute_instance" "db" {
     initialize_params {
       image_id = each.value.image_id
       type     = each.value.disk_type
-      size     = each.value.disk_volume  # Разный disk_volume
+      size     = each.value.disk_volume # Разный disk_volume
     }
   }
 
   network_interface {
-    subnet_id = var.subnet_id  # ID подсети из задания 1
+    subnet_id = var.subnet_id # ID подсети из задания 1
 
 
-    security_group_ids = [var.security_group_id]  # ID группы безопасности
+    security_group_ids = [var.security_group_id] # ID группы безопасности
 
-    nat       = each.value.enable_nat
+    nat = each.value.enable_nat
   }
 
   # file в local-переменной для считывания ключа ~/.ssh/id_rsa.pub

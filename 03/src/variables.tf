@@ -1,9 +1,3 @@
-###cloud vars
-#variable "token" {
-#  type        = string
-#  description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
-#}
-
 variable "cloud_id" {
   type        = string
   default     = "b1gsjth4p4d9mq314dsk"
@@ -61,16 +55,12 @@ variable "security_group_id" {
   description = "ID группы безопасности, созданной в задании 1"
   type        = string
   default     = "enpffp3sop0a8nc2hhst"
-  # ПРИМЕЧАНИЕ: Это значение ДОЛЖНО быть указано в terraform.tfvars
-  # Пример: security_group_id = "enp5n7maju7oexampleid"
 }
 
 variable "subnet_id" {
   description = "ID подсети, созданной в задании 1"
   type        = string
   default     = "e9b47uqahublrm45bugb"
-  # ПРИМЕЧАНИЕ: Это значение ДОЛЖНО быть указано в terraform.tfvars
-  # Пример: subnet_id = "e9b0le401619exampleid"
 }
 
 # ========== ПЕРЕМЕННЫЕ ДЛЯ WEB ВМ (count-vm.tf) ==========
@@ -78,13 +68,13 @@ variable "subnet_id" {
 variable "web_vm_count" {
   description = "Количество создаваемых web ВМ"
   type        = number
-  default     = 2  # Задание: две одинаковых ВМ
+  default     = 2 # Задание: две одинаковых ВМ
 }
 
 variable "web_vm_name_prefix" {
   description = "Префикс имени для web ВМ"
   type        = string
-  default     = "web"  # Будет: web-1, web-2
+  default     = "web" # Будет: web-1, web-2
 }
 
 variable "web_vm_platform_id" {
@@ -121,7 +111,7 @@ variable "web_vm_core_fraction" {
 variable "web_vm_image_id" {
   description = "ID образа ОС для web ВМ"
   type        = string
-  default     = "fd8vmcue7aajpmeo39kk"  # Ubuntu 22.04 LTS
+  default     = "fd8vmcue7aajpmeo39kk" # Ubuntu 22.04 LTS
 }
 
 variable "web_vm_disk_type" {
@@ -133,7 +123,7 @@ variable "web_vm_disk_type" {
 variable "web_vm_boot_disk_size" {
   description = "Размер загрузочного диска для web ВМ в ГБ"
   type        = number
-  default     = 10  # Минимальный разумный размер
+  default     = 10 # Минимальный разумный размер
 }
 
 variable "web_vm_enable_nat" {
@@ -145,10 +135,10 @@ variable "web_vm_enable_nat" {
 variable "each_vm" {
   description = "Конфигурация ВМ баз данных (main и replica)"
   type = list(object({
-    vm_name       = string           # "main" и "replica"
-    cpu           = number           # разные значения
-    ram           = number           # разные значения
-    disk_volume   = number           # разные значения
+    vm_name     = string # "main" и "replica"
+    cpu         = number # разные значения
+    ram         = number # разные значения
+    disk_volume = number # разные значения
 
     # Дополнительные параметры
     platform_id   = optional(string, "standard-v3")
@@ -162,19 +152,19 @@ variable "each_vm" {
   default = [
     # ВМ "main"
     {
-      vm_name     = "main"
-      cpu         = 4      # разные
-      ram         = 8      # разные
-      disk_volume = 20     # разные
-      core_fraction = 50   # высокая доля ядра для основной БД
+      vm_name       = "main"
+      cpu           = 4  # разные
+      ram           = 8  # разные
+      disk_volume   = 20 # разные
+      core_fraction = 50 # высокая доля ядра для основной БД
     },
     # ВМ "replica"
     {
-      vm_name     = "replica"
-      cpu         = 2      # разные
-      ram         = 4      # разные
-      disk_volume = 15     # разные
-      core_fraction = 20   # средняя доля ядра для реплики
+      vm_name       = "replica"
+      cpu           = 2  # разные
+      ram           = 4  # разные
+      disk_volume   = 15 # разные
+      core_fraction = 20 # средняя доля ядра для реплики
     }
   ]
 }
@@ -203,4 +193,112 @@ output "all_vm_fqdns" {
     [for vm in yandex_compute_instance.web : vm.fqdn],
     [for name, vm in yandex_compute_instance.db : vm.fqdn]
   )
+}
+
+
+# ========== ПЕРЕМЕННЫЕ ДЛЯ ЗАДАНИЯ 3 ==========
+
+# Диски
+variable "storage_disk_count" {
+  description = "Количество создаваемых дополнительных дисков"
+  type        = number
+  default     = 3
+}
+
+variable "storage_disk_name_prefix" {
+  description = "Префикс имени для дополнительных дисков"
+  type        = string
+  default     = "storage-disk"
+}
+
+variable "storage_disk_description" {
+  description = "Описание создаваемых дисков"
+  type        = string
+  default     = "Дополнительный диск для ВМ storage"
+}
+
+variable "storage_disk_type" {
+  description = "Тип создаваемых дисков"
+  type        = string
+  default     = "network-hdd"
+}
+
+variable "storage_disk_size_gb" {
+  description = "Размер каждого диска в гигабайтах"
+  type        = number
+  default     = 1
+}
+
+# ВМ storage
+variable "storage_vm_name" {
+  description = "Имя ВМ storage"
+  type        = string
+  default     = "storage"
+}
+
+variable "storage_vm_zone" {
+  description = "Зона доступности для ВМ storage"
+  type        = string
+  default     = "ru-central1-a"
+}
+
+variable "storage_vm_platform_id" {
+  description = "Платформа для ВМ storage"
+  type        = string
+  default     = "standard-v3"
+}
+
+variable "storage_vm_cores" {
+  description = "Количество ядер CPU для ВМ storage"
+  type        = number
+  default     = 2
+}
+
+variable "storage_vm_memory_gb" {
+  description = "Объем памяти для ВМ storage в гигабайтах"
+  type        = number
+  default     = 2
+}
+
+variable "storage_vm_core_fraction" {
+  description = "Гарантированная доля ядра для ВМ storage"
+  type        = number
+  default     = 20
+}
+
+variable "storage_vm_image_id" {
+  description = "ID образа ОС для ВМ storage"
+  type        = string
+  default     = "fd8vmcue7aajpmeo39kk"
+}
+
+variable "storage_vm_boot_disk_type" {
+  description = "Тип загрузочного диска для ВМ storage"
+  type        = string
+  default     = "network-hdd"
+}
+
+variable "storage_vm_boot_disk_size_gb" {
+  description = "Размер загрузочного диска для ВМ storage в гигабайтах"
+  type        = number
+  default     = 10
+}
+
+variable "storage_vm_enable_nat" {
+  description = "Включить внешний IP-адрес (NAT) для ВМ storage"
+  type        = bool
+  default     = true
+}
+
+# ОБЩИЕ переменные (если их еще нет)
+variable "vm_preemptible" {
+  description = "Создавать прерываемые ВМ для экономии"
+  type        = bool
+  default     = true
+}
+
+variable "allow_stopping_for_update" {
+  description = "Разрешить остановку ВМ для обновления"
+  type        = bool
+  default     = true
 }
