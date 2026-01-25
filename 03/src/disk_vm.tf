@@ -44,7 +44,7 @@ resource "yandex_compute_instance" "storage" {
     ssh-keys = "${var.vm_ssh_user}:${local.vms_ssh_root_key}"
   }
 
-  # ========== КЛЮЧЕВОЙ МОМЕНТ: dynamic secondary_disk с for_each ==========
+  # ========== dynamic secondary_disk с for_each ==========
   dynamic "secondary_disk" {
     for_each = {
       for idx, disk in yandex_compute_disk.storage_disks : idx => disk.id
