@@ -290,7 +290,6 @@ variable "storage_vm_enable_nat" {
   default     = true
 }
 
-# ОБЩИЕ переменные (если их еще нет)
 variable "vm_preemptible" {
   description = "Создавать прерываемые ВМ для экономии"
   type        = bool
